@@ -1,0 +1,45 @@
+apply plugin: 'com.android.library'
+
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+    sourceSets {
+        main {
+            // Here is the path to your source code
+            java {
+                srcDir 'src/main/java'
+            }
+        }
+    }
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 21
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+task deleteOldJar(type: Delete) {
+    delete 'build/libs/VolleyAndroid.jar'
+}
+task exportJar(type: Copy) {
+    from('build/intermediates/bundles/release/')
+    into('release/')
+    include('classes.jar')
+    ///Give what ever name you want to give
+    rename('classes.jar', 'VolleyAndroid.jar')
+}
+
+exportJar.dependsOn(deleteOldJar, build)
